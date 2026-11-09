@@ -1,7 +1,6 @@
 // Anime-flavoured hero and ID cards. The portrait is hand-drawn vector art (src/portrait.mjs).
-import { animate, animateTransform, cardChrome, EASE, esc, f, hairlineGradient, svgDoc } from "./lib.mjs";
+import { animate, animateTransform, art, brandIcon, cardChrome, EASE, esc, f, hairlineGradient, svgDoc } from "./lib.mjs";
 import { rv, wrap, lines, eyebrow } from "./cards.mjs";
-import { portrait } from "./portrait.mjs";
 
 /** Drifting petals: base state is mid-flight, so a non-animating viewer still sees a scattered few. */
 function petals(t, w, h, n = 9) {
@@ -24,11 +23,13 @@ export async function heroAnime(t) {
   const defs =
     hairlineGradient(t, "hero") +
     `<radialGradient id="glow" cx="0.78" cy="0.5" r="0.55"><stop offset="0" stop-color="${t.glow}"/><stop offset="1" stop-color="${t.glow}" stop-opacity="0"/></radialGradient>
-     <clipPath id="clipcard"><rect width="${W}" height="${H}" rx="26"/></clipPath>`;
-  const px = 590,
-    py = 44,
-    sc = 0.7;
-  const swing = animateTransform("rotate", "-1.6 200 240;1.6 200 240;-1.6 200 240", { dur: "7s", repeat: "indefinite", calc: "spline", keyTimes: [0, 0.5, 1], splines: "0.45 0 0.55 1;0.45 0 0.55 1" });
+     <clipPath id="clipcard"><rect width="${W}" height="${H}" rx="26"/></clipPath><clipPath id="portclip"><rect x="588" y="22" width="270" height="360" rx="24"/></clipPath>`;
+  const px = 588,
+    py = 22,
+    pw = 270,
+    ph = 360;
+  const shot = await art("portrait.webp", { left: 0, top: 0, width: 848, height: 1131 }, 540, 78);
+  const swing = animateTransform("rotate", "-1.4 723 200;1.4 723 200;-1.4 723 200", { dur: "7s", repeat: "indefinite", calc: "spline", keyTimes: [0, 0.5, 1], splines: "0.45 0 0.55 1;0.45 0 0.55 1" });
   const burst = animateTransform("rotate", "0 740 190;360 740 190", { dur: "90s", repeat: "indefinite" });
   const lines24 = Array.from({ length: 28 }, (_, i) => {
     const a = (i / 28) * Math.PI * 2;
@@ -59,11 +60,14 @@ export async function heroAnime(t) {
     1.0,
     { dy: 10 },
   )}
-  ${rv(`<g transform="translate(${px} ${py}) scale(${sc})"><g>${portrait(t, "hp")}${swing}</g></g>`, 0.4, { dy: 30, dx: 30, dur: 1.2 })}
+  ${rv(`<g><g>
+      <rect x="${px - 5}" y="${py - 5}" width="${pw + 10}" height="${ph + 10}" rx="28" fill="${t.card}" stroke="${t.bronze}" stroke-width="2"/>
+      <image href="${shot}" x="${px}" y="${py}" width="${pw}" height="${ph}" clip-path="url(#portclip)" preserveAspectRatio="xMidYMid slice"/>
+      ${swing}</g></g>`, 0.4, { dy: 30, dx: 30, dur: 1.2 })}
   ${rv(
     `<g>
-      <g transform="translate(500 96)"><rect width="104" height="30" rx="15" fill="${t.card}" stroke="${t.bronze}"/><text x="52" y="20" font-size="12" font-weight="600" text-anchor="middle" fill="${t.text}">DESIGNER</text></g>
-      <g transform="translate(762 338)"><rect width="104" height="30" rx="15" fill="${t.card}" stroke="${t.bronze}"/><text x="52" y="20" font-size="12" font-weight="600" text-anchor="middle" fill="${t.text}">DEVELOPER</text></g>
+      <g transform="translate(470 56)"><rect width="104" height="30" rx="15" fill="${t.card}" stroke="${t.bronze}"/><text x="52" y="20" font-size="12" font-weight="600" text-anchor="middle" fill="${t.text}">DESIGNER</text></g>
+      <g transform="translate(752 336)"><rect width="104" height="30" rx="15" fill="${t.card}" stroke="${t.bronze}"/><text x="52" y="20" font-size="12" font-weight="600" text-anchor="middle" fill="${t.text}">DEVELOPER</text></g>
     </g>`,
     1.3,
     { dy: 10 },
@@ -74,7 +78,8 @@ export async function heroAnime(t) {
 export async function idAnime(t) {
   const W = 900,
     H = 400;
-  const defs = hairlineGradient(t, "id") + `<linearGradient id="badge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${t.card2}"/><stop offset="1" stop-color="${t.card}"/></linearGradient>`;
+  const idShot = await art("portrait.webp", { left: 0, top: 0, width: 848, height: 1131 }, 360, 78);
+  const defs = `<clipPath id="idclip"><rect x="76" y="76" width="180" height="240" rx="16"/></clipPath>` + hairlineGradient(t, "id") + `<linearGradient id="badge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${t.card2}"/><stop offset="1" stop-color="${t.card}"/></linearGradient>`;
   const bx = 48,
     by = 44,
     bw = 236,
@@ -85,7 +90,7 @@ export async function idAnime(t) {
     <path d="M${bx + bw / 2 - 18} 0 L${bx + bw / 2 - 6} ${by + 8} M${bx + bw / 2 + 18} 0 L${bx + bw / 2 + 6} ${by + 8}" stroke="${t.bronze}" stroke-width="2.5" fill="none"/>
     <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="20" fill="url(#badge)" stroke="${t.lineStrong}"/>
     <rect x="${bx + bw / 2 - 26}" y="${by + 10}" width="52" height="9" rx="4.5" fill="${t.plum}" fill-opacity="0.85"/>
-    <g transform="translate(${bx + 28} ${by + 32}) scale(0.45)">${portrait(t, "ip")}</g>
+    <image href="${idShot}" x="${bx + 28}" y="${by + 32}" width="180" height="240" clip-path="url(#idclip)" preserveAspectRatio="xMidYMid slice"/>
     <text class="serif" x="${bx + 28}" y="${by + 278}" font-size="26" fill="${t.text}">Ali Tsai</text>
     <text x="${bx + 28}" y="${by + 298}" font-size="12.5" fill="${t.soft}">Designer and developer</text>
     <rect x="${bx + 28}" y="${by + 312}" width="${bw - 56}" height="3" rx="1.5" fill="${t.bronze}"/>
@@ -140,4 +145,57 @@ export async function idAnime(t) {
   ${rv(eyebrow(t, kx, 212, "Live sites by build"), 0.7, { dy: 6 })}
   ${rv(bars, 0.75, { dy: 6 })}`;
   return svgDoc({ w: W, h: H, t, defs, body, title: "ID card and stats", desc: "An anime-style ID badge for Ali Tsai, designer and developer, plus counts from the portfolio: 7 live sites, 4 featured case studies, 3 site languages, and a chart of how the sites are built." });
+}
+
+/** Arsenal: the full-body character on the left, the tool orbit and the list on the right. */
+export async function stackAnime(t) {
+  const W = 900,
+    H = 380;
+  const shot = await art("fullbody.jpg", { left: 60, top: 40, width: 728, height: 1180 }, 520, 76);
+  const cx = 452,
+    cy = 190;
+  const inner = ["siNextdotjs", "siReact", "siTypescript", "siTailwindcss"];
+  const outer = ["siVite", "siFramer", "siHtml5", "siCss", "siJavascript"];
+  const ring = (items, r, dur, dir) => {
+    const parts = items
+      .map((slug, i) => {
+        const a = (i / items.length) * Math.PI * 2 - Math.PI / 2;
+        const x = Math.cos(a) * r,
+          y = Math.sin(a) * r;
+        const spin = animateTransform("rotate", dir > 0 ? "360 0 0;0 0 0" : "-360 0 0;0 0 0", { dur: `${dur}s`, repeat: "indefinite" });
+        return `<g transform="translate(${f(x)} ${f(y)})"><g><circle r="21" fill="${t.card2}" stroke="${t.line}"/>${brandIcon(slug, -11.5, -11.5, 23, t.text)}${spin}</g></g>`;
+      })
+      .join("");
+    const rot = animateTransform("rotate", dir > 0 ? "0;360" : "0;-360", { dur: `${dur}s`, repeat: "indefinite" });
+    return `<g>${parts}${rot}</g>`;
+  };
+  const defs =
+    hairlineGradient(t, "stack") +
+    `<radialGradient id="core" cx="0.35" cy="0.3" r="0.9"><stop offset="0" stop-color="${t.plum}"/><stop offset="1" stop-color="${t.plumDeep}"/></radialGradient>
+     <clipPath id="figclip"><rect x="40" y="30" width="236" height="320" rx="20"/></clipPath>`;
+  const groups = [
+    ["Frameworks", ["Next.js · React · Vite"], 140],
+    ["Languages and styling", ["TypeScript · JavaScript", "HTML5 · CSS · Tailwind CSS"], 204],
+    ["Motion", ["Motion for React, CSS and SVG"], 290],
+  ];
+  let list = "";
+  groups.forEach(([k, v, y], i) => {
+    list += rv(
+      `<g><text x="650" y="${y}" font-size="11" font-weight="600" letter-spacing="1.8" fill="${t.bronze}">${esc(k.toUpperCase())}</text>${lines(v, 650, y + 26, 22, `class="serif" font-size="17" fill="${t.text}"`)}</g>`,
+      0.4 + i * 0.18,
+      { dy: 12 },
+    );
+  });
+  const bob = animateTransform("translate", "0 0;0 -5;0 0", { dur: "6s", repeat: "indefinite", calc: "spline", keyTimes: [0, 0.5, 1], splines: "0.45 0 0.55 1;0.45 0 0.55 1" });
+  const body = `
+  ${cardChrome(t, 0, 0, W, H, 26, "stack")}
+  ${rv(`<g><rect x="35" y="25" width="246" height="330" rx="24" fill="${t.card2}" stroke="${t.bronze}" stroke-width="2"/><image href="${shot}" x="40" y="30" width="236" height="320" clip-path="url(#figclip)" preserveAspectRatio="xMidYMid slice"/>${bob}</g>`, 0.1, { dy: 20, dx: -20, dur: 1.1 })}
+  <circle cx="${cx}" cy="${cy}" r="62" fill="none" stroke="${t.line}" stroke-dasharray="3 7"/>
+  <circle cx="${cx}" cy="${cy}" r="112" fill="none" stroke="${t.line}" stroke-dasharray="3 9"/>
+  <g transform="translate(${cx} ${cy})">${ring(outer, 112, 60, 1)}${ring(inner, 62, 44, -1)}</g>
+  <g transform="translate(${cx} ${cy})"><circle r="26" fill="url(#core)"/><text class="serif" y="8" font-size="22" font-style="italic" text-anchor="middle" fill="${t.onPlum}">A</text></g>
+  ${rv(eyebrow(t, 650, 62, "Arsenal"), 0.05, { dy: 8 })}
+  ${rv(`<text class="serif" x="648" y="98" font-size="26" fill="${t.text}">Tools I <tspan font-style="italic" fill="${t.plum}">fight with</tspan></text>`, 0.15, { dy: 14 })}
+  ${list}`;
+  return svgDoc({ w: W, h: H, t, defs, body, title: "Arsenal", desc: "Anime-style full-body illustration of Ali Tsai beside two rotating rings of tools: Next.js, React, Vite, TypeScript, JavaScript, HTML5, CSS, Tailwind CSS and Motion." });
 }

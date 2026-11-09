@@ -154,3 +154,16 @@ ${body}
 
 /** Approximate text width in px for chip layout (Hanken Grotesk, around 0.56em per character). */
 export const textWidth = (s, size) => Math.ceil(s.length * size * 0.56);
+
+const artCache = new Map();
+/** A region of the artwork in src/art as a base64 JPEG data URI. region = {left, top, width, height} in source pixels. */
+export async function art(name, region, outWidth, quality = 74) {
+  const key = `${name}|${JSON.stringify(region)}|${outWidth}|${quality}`;
+  if (!artCache.has(key)) {
+    let img = sharp(path.join(root, "src/art", name));
+    if (region) img = img.extract(region);
+    const buf = await img.resize({ width: outWidth }).jpeg({ quality, mozjpeg: true }).toBuffer();
+    artCache.set(key, `data:image/jpeg;base64,${buf.toString("base64")}`);
+  }
+  return artCache.get(key);
+}

@@ -2,8 +2,8 @@
 // Run: npm run build
 import fs from "node:fs";
 import path from "node:path";
-import { about, connect, linkTile, projectCard, stack } from "./cards.mjs";
-import { heroAnime as hero, idAnime as idDash } from "./cards-anime.mjs";
+import { about, connect, linkTile, projectCard } from "./cards.mjs";
+import { heroAnime as hero, idAnime as idDash, stackAnime as stack } from "./cards-anime.mjs";
 import { root, themes, svgDoc, cardChrome, hairlineGradient, esc } from "./lib.mjs";
 
 const VERSION = "1"; // bump to bust GitHub's image cache after changing an SVG
