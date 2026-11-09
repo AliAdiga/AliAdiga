@@ -3,7 +3,7 @@
 import { animate, animateTransform, brandIcon, cardChrome, cover, EASE, esc, f, hairlineGradient, phosphor, svgDoc, textWidth } from "./lib.mjs";
 
 /** Entrance: holds hidden until `delay`, then eases in. Before `delay` the element is invisible, afterwards it freezes visible. */
-function rv(inner, delay, { dy = 14, dx = 0, dur = 0.9 } = {}) {
+export function rv(inner, delay, { dy = 14, dx = 0, dur = 0.9 } = {}) {
   const total = delay + dur;
   const k = delay / total;
   const opts = { dur: `${f(total)}s`, keyTimes: [0, k, 1], fill: "freeze", calc: "spline", splines: `0 0 1 1;${EASE}` };
@@ -11,7 +11,7 @@ function rv(inner, delay, { dy = 14, dx = 0, dur = 0.9 } = {}) {
 }
 
 /** Greedy word wrap by approximate pixel width. */
-function wrap(text, size, maxW) {
+export function wrap(text, size, maxW) {
   const words = text.split(" ");
   const lines = [];
   let cur = "";
@@ -26,10 +26,10 @@ function wrap(text, size, maxW) {
   return lines;
 }
 
-const lines = (arr, x, y, lh, attrs) => arr.map((l, i) => `<text x="${x}" y="${y + i * lh}" ${attrs}>${esc(l)}</text>`).join("");
+export const lines = (arr, x, y, lh, attrs) => arr.map((l, i) => `<text x="${x}" y="${y + i * lh}" ${attrs}>${esc(l)}</text>`).join("");
 
 /** Tiny label in tracked caps. */
-const eyebrow = (t, x, y, s) => `<text x="${x}" y="${y}" font-size="11" font-weight="600" letter-spacing="2.2" fill="${t.bronze}">${esc(s.toUpperCase())}</text>`;
+export const eyebrow = (t, x, y, s) => `<text x="${x}" y="${y}" font-size="11" font-weight="600" letter-spacing="2.2" fill="${t.bronze}">${esc(s.toUpperCase())}</text>`;
 
 /* ---------------------------------------------------------------- HERO */
 export async function hero(t) {
@@ -193,8 +193,8 @@ export async function stack(t) {
   <circle cx="${cx}" cy="${cy}" r="70" fill="none" stroke="${t.line}" stroke-dasharray="3 7"/>
   <circle cx="${cx}" cy="${cy}" r="128" fill="none" stroke="${t.line}" stroke-dasharray="3 9"/>
   ${animated}
-  ${rv(eyebrow(t, 500, 66, "Stack"), 0.05, { dy: 8 })}
-  ${rv(`<text class="serif" x="498" y="104" font-size="28" fill="${t.text}">Tools I <tspan font-style="italic" fill="${t.plum}">actually ship with</tspan></text>`, 0.15, { dy: 14 })}
+  ${rv(eyebrow(t, 500, 66, "Arsenal"), 0.05, { dy: 8 })}
+  ${rv(`<text class="serif" x="498" y="104" font-size="28" fill="${t.text}">Tools I <tspan font-style="italic" fill="${t.plum}">fight with</tspan></text>`, 0.15, { dy: 14 })}
   ${list}
 `;
   return svgDoc({ w: W, h: H, t, defs, body: full, title: "Stack", desc: "Next.js, React, Vite, TypeScript, JavaScript, HTML5, CSS, Tailwind CSS and Motion, shown as two rotating rings around a monogram." });
@@ -289,8 +289,8 @@ export async function connect(t) {
     H = 150;
   const body = `
   ${cardChrome(t, 0, 0, W, H, 26, "connect")}
-  ${rv(eyebrow(t, 48, 50, "Connect"), 0.05, { dy: 8 })}
-  ${rv(`<text class="serif" x="46" y="98" font-size="36" fill="${t.text}">Have a website in mind? <tspan font-style="italic" fill="${t.plum}">Say hello.</tspan></text>`, 0.15, { dy: 16 })}
+  ${rv(eyebrow(t, 48, 50, "Send a message"), 0.05, { dy: 8 })}
+  ${rv(`<text class="serif" x="46" y="98" font-size="36" fill="${t.text}">Next mission: <tspan font-style="italic" fill="${t.plum}">your website.</tspan></text>`, 0.15, { dy: 16 })}
   ${rv(`<text x="48" y="126" font-size="13.5" fill="${t.soft}">Based in Amman, Jordan. The quickest route is email or the portfolio's contact form.</text>`, 0.4, { dy: 8 })}
   <g transform="translate(790 76)">
     <circle r="30" fill="none" stroke="${t.bronze}" stroke-opacity="0.5" stroke-dasharray="2 6"><animateTransform attributeName="transform" type="rotate" values="0;360" dur="24s" repeatCount="indefinite"/></circle>
@@ -315,7 +315,7 @@ export async function linkTile(t, { label, sub, icon }) {
 }
 
 /** Project cover card: slow push-in on the cover, name, one honest line, and a concept tag. */
-export async function projectCard(t, { cover: name, title, line, tag }) {
+export async function projectCard(t, { cover: name, title, line, tag, mission }) {
   const W = 436,
     H = 336;
   const imgH = 192;
@@ -338,6 +338,7 @@ export async function projectCard(t, { cover: name, title, line, tag }) {
       ${grow("y", f(iy - (ih - imgH) / 2), f(iy - (ih - imgH) / 2 - (ih * (zoom - 1)) / 2))}
     </image>
   </g>
+  <g transform="translate(${pad + 14} ${pad + 14})"><rect width="${textWidth(mission, 11) + 26}" height="26" rx="13" fill="${t.card}" fill-opacity="0.92"/><text x="13" y="17.5" font-size="11" font-weight="700" letter-spacing="1.6" fill="${t.plum}">${esc(mission.toUpperCase())}</text></g>
   <text class="serif" x="${pad + 6}" y="${imgH + pad + 40}" font-size="26" fill="${t.text}">${esc(title)}</text>
   <text x="${W - pad - 6}" y="${imgH + pad + 38}" font-size="16" text-anchor="end" fill="${t.bronze}">↗</text>
   ${lines(wrap(line, 13.5, iw - 12), pad + 6, imgH + pad + 64, 19, `font-size="13.5" fill="${t.soft}"`)}

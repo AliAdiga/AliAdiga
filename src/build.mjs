@@ -2,7 +2,8 @@
 // Run: npm run build
 import fs from "node:fs";
 import path from "node:path";
-import { about, connect, hero, idDash, linkTile, projectCard, stack } from "./cards.mjs";
+import { about, connect, linkTile, projectCard, stack } from "./cards.mjs";
+import { heroAnime as hero, idAnime as idDash } from "./cards-anime.mjs";
 import { root, themes, svgDoc, cardChrome, hairlineGradient, esc } from "./lib.mjs";
 
 const VERSION = "1"; // bump to bust GitHub's image cache after changing an SVG
@@ -35,7 +36,7 @@ for (const t of Object.values(themes)) {
     ["stack", await stack(t)],
     ["id", await idDash(t)],
     ["connect", await connect(t)],
-    ...(await Promise.all(projects.map(async (p) => [`work-${p.key}`, await projectCard(t, { cover: p.cover, title: p.title, line: p.line, tag: "Independent concept" })]))),
+    ...(await Promise.all(projects.map(async (p, i) => [`work-${p.key}`, await projectCard(t, { cover: p.cover, title: p.title, line: p.line, tag: "Independent concept", mission: `Mission 0${i + 1}` })]))),
     ...(await Promise.all(links.map(async (l) => [`link-${l.key}`, await linkTile(t, l)]))),
   ];
   for (const [name, svg] of jobs) {
@@ -80,7 +81,7 @@ ${pic("stack", "Stack: Next.js, React, Vite, TypeScript, JavaScript, HTML5, CSS,
 
 ${pic("id", "Ali Tsai, designer and developer, Scroll & Serif, Amman. 7 live sites, 4 featured case studies, 3 site languages.")}
 
-## Selected work
+## Missions
 
 <table>
 <tr>
@@ -91,7 +92,7 @@ ${workCells.slice(2, 4).join("\n")}
 </tr>
 </table>
 
-<sub>Each card opens the live site. All four are independent concept and personal projects. The portfolio also shows three more websites.</sub>
+<sub>Each mission card opens the live site. All four are independent concept and personal projects. The portfolio also shows three more websites.</sub>
 
 <a href="profile-3d-contrib/profile-night-view.svg"><img src="profile-3d-contrib/profile-night-view.svg" alt="A 3D city built from my GitHub contributions" width="100%"></a>
 

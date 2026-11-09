@@ -10,7 +10,7 @@
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/id-dark.svg?v=1"><img src="assets/id-light.svg?v=1" alt="Ali Tsai, designer and developer, Scroll &amp; Serif, Amman. 7 live sites, 4 featured case studies, 3 site languages." width="100%"></picture>
 
-## Selected work
+## Missions
 
 <table>
 <tr>
@@ -23,7 +23,7 @@
 </tr>
 </table>
 
-<sub>Each card opens the live site. All four are independent concept and personal projects. The portfolio also shows three more websites.</sub>
+<sub>Each mission card opens the live site. All four are independent concept and personal projects. The portfolio also shows three more websites.</sub>
 
 <a href="profile-3d-contrib/profile-night-view.svg"><img src="profile-3d-contrib/profile-night-view.svg" alt="A 3D city built from my GitHub contributions" width="100%"></a>
 
